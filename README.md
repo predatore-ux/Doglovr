@@ -57,4 +57,3 @@ There are no secrets in the repository. Never commit `.env` files or access toke
 This is an educational starter release, with six lessons and six breed guides, not an exhaustive breed database. Lesson durations include a short practice activity. Breed traits describe tendencies; needs vary by individual dog. Training content uses reward-based methods. Veterinary concerns and sudden changes in toileting should be referred to a veterinarian. Specialized assistance/service-dog certification is outside this app’s scope.
 
 Content sources and photo credits are in [ATTRIBUTION.md](ATTRIBUTION.md). Validation evidence and known limits are in [QA.md](QA.md).
-
