@@ -1,6 +1,12 @@
 name: Launch on GitHub Pages
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'dist/**'
+      - '.github/workflows/pages.yml'
+      - 'index.html'
 permissions:
   contents: read
   pages: write
