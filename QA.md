@@ -42,4 +42,4 @@ Mobile profile editing, state validation and legacy migration, session-only stor
 
 The shipped release is a static educational app: six lessons and six breed guides, with data saved only in the current browser/origin. It has no backend, account system or cross-device synchronization. Images are illustrative. It has been browser-tested in Chromium; Safari, Firefox and a real screen reader have not been independently tested. Automated state/server checks are included; the browser scenarios above were performed interactively rather than through a bundled end-to-end browser runner.
 
-The Pages launch workflow is manual and requires selecting GitHub Actions in repository Pages settings. A code push alone does not prove that a public deployment exists. The existing Sites preview has its own private access policy.
+The Pages launch workflow deploys `dist/` on app and launch-configuration changes to `main`, and can also run manually. A root HTML entry point supports branch-based Pages hosting as a fallback. Deployment success must be verified at the public URL. The existing Sites preview has its own private access policy.
