@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Understand your dog with kind, bite-size lessons on body language, potty training, everyday skills and breed needs. Build a happier life together with DOGLOVR.">
+  <meta name="theme-color" content="#244b38">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta property="og:title" content="DOGLOVR — A little learning. A lot of love.">
+  <meta property="og:description" content="Kind, practical lessons for a stronger bond with your dog.">
+  <meta property="og:type" content="website">
+  <title>Border Collie · DOGLOVR</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="guides.js" defer></script>
+  <script src="state.js" defer></script>
+  <script src="pages.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body data-breed="border-collie">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <aside aria-label="DOGLOVR navigation">
+    <a class="logo" href="#home" aria-label="DOGLOVR home">✿ DOGLOVR<span>FOR THE LOVE OF DOGS</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#home"><span class="nav-icon" aria-hidden="true">⌂</span><span>Overview</span></a>
+      <a href="#learn"><span class="nav-icon" aria-hidden="true">▤</span><span>Learning library</span></a>
+      <a href="#breeds"><span class="nav-icon" aria-hidden="true">♧</span><span>Breed explorer</span></a>
+      <a href="#plan"><span class="nav-icon" aria-hidden="true">♡</span><span>My learning plan</span></a>
+    </nav>
+    <div class="sidebar-note"><span>GOOD DOGS. GREAT HUMANS.</span><h3>Every day is a chance to grow together.</h3><p>One small lesson at a time.</p><div aria-hidden="true">🐕</div></div>
+    <button class="profile" data-action="profile"><span class="avatar" aria-hidden="true">🐶</span><span><b data-dog-name>Your dog</b><small>Edit dog profile ↗</small></span></button>
+  </aside>
+  <main id="main" tabindex="-1">
+    <header><div class="crumb">YOUR DOG PARENT ERA <span aria-hidden="true">✦</span></div><button class="pill mobile-profile" data-action="profile"><span aria-hidden="true">🐶</span> <span data-dog-name>Your dog</span> · Edit</button><a href="#plan" class="pill header-plan">♡ Your learning plan</a></header>
+    <p id="storage-note" class="storage-note" role="status" hidden>Browser storage is unavailable. Your changes will last for this session only.</p>
+    <div id="view"></div>
+    <noscript><div class="empty"><h1>DOGLOVR needs JavaScript</h1><p>Please enable JavaScript to explore lessons and save your progress.</p></div></noscript>
+    <footer><span>Made for the ones with muddy paws and full hearts.</span><b>DOGLOVR © 2026</b></footer>
+  </main>
+  <dialog id="modal" aria-labelledby="dialog-title"><button class="close" data-action="close" aria-label="Close dialog">×</button><div id="modalbody"></div></dialog>
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

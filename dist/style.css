@@ -148,3 +148,116 @@ h1 { overflow-wrap: anywhere; }
   .hero { grid-template-columns: 1fr; }
   .hero-image { height: 270px; }
 }
+/* Full-page lessons and breed guides */
+.detail-page { padding-top: 26px; }
+.breadcrumbs { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; font-size: 13px; color: var(--muted); }
+.breadcrumbs a { color: var(--green); font-weight: 600; min-height: 32px; display: inline-flex; align-items: center; }
+.detail-hero { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 28px; background: #e9eddf; border-radius: 18px; padding: 32px; margin-bottom: 32px; }
+.detail-hero h1 { font-size: 36px; margin: 15px 0; }
+.detail-hero p { font-size: 16px; color: #52634e; margin: 0 0 20px; }
+.detail-hero img { width: 100%; height: auto; border-radius: 12px; }
+.detail-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.detail-tags span { font-size: 11px; border: 1px solid #cdd8c2; border-radius: 20px; padding: 6px 10px; background: #f6f8ee; }
+.lesson-layout { display: grid; grid-template-columns: 210px minmax(0,1fr); gap: 30px; align-items: start; }
+.lesson-rail, .breed-facts { position: sticky; inset: auto; top: 24px; width: auto; height: auto; min-width: 0; overflow: visible; border: 1px solid var(--line); border-radius: 12px; background: #fffef9; padding: 20px; display: block; }
+.lesson-rail ol { padding: 0; margin: 18px 0; list-style: none; display: grid; gap: 12px; }
+.lesson-rail button { display: flex; gap: 10px; text-align: left; align-items: start; width: 100%; padding: 8px 0; border: 0; background: none; color: var(--ink); font-size: 13px; line-height: 1.6; min-height: 44px; }
+.lesson-rail button span { color: #8b7438; font-size: 11px; font-weight: 700; padding-top: 2px; }
+.rail-progress { border-top: 1px solid var(--line); padding-top: 18px; }
+.rail-progress strong { font-size: 13px; }
+.rail-progress progress { margin: 12px 0; }
+.rail-progress small { display: block; line-height: 1.6; color: var(--muted); font-size: 11px; }
+.lesson-content { min-width: 0; }
+.lesson-content h2, .breed-detail h2 { font-size: 24px; line-height: 1.35; letter-spacing: -.7px; margin: 12px 0 18px; }
+.lesson-content h3, .breed-detail h3 { font-size: 17px; margin: 20px 0 8px; }
+.preparation { padding: 5px 0 26px; }
+.preparation > p { color: var(--muted); }
+.kit-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 22px 0; }
+.kit-list li { display: flex; align-items: start; gap: 10px; font-size: 14px; line-height: 1.6; }
+.kit-list span { color: #72905b; }
+.preparation .care-note { color: #6a5c36; font-size: 14px; }
+.step-stack { display: grid; gap: 30px; }
+.lesson-step { padding: 28px; background: #fffef9; border: 1px solid var(--line); border-radius: 15px; scroll-margin-top: 28px; }
+.step-heading { display: flex; gap: 15px; align-items: baseline; margin-bottom: 20px; }
+.step-heading h2 { margin: 0; }
+.step-number { display: grid; place-items: center; background: #edf1e6; color: #6c804c; border-radius: 10px; min-width: 42px; height: 42px; font-size: 16px; font-weight: 700; }
+.lesson-step figure { margin: 0 0 22px; }
+.lesson-step figure img { display: block; width: 100%; height: auto; border-radius: 11px; }
+.lesson-step figcaption { font-size: 11px; line-height: 1.6; color: var(--muted); margin: 10px 0 0; }
+.step-instructions { font-size: 16px; color: #3b5142; line-height: 1.8; }
+.step-explainer p { font-size: 14px; color: var(--muted); margin-top: 0; }
+.practice-prompt { background: #edf2e6; border-radius: 10px; padding: 20px; margin: 22px 0 12px; }
+.practice-prompt p { font-size: 14px; margin-bottom: 12px; }
+.practice-checkbox { display: flex; gap: 11px; align-items: center; min-height: 44px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.practice-checkbox input { width: 19px; height: 19px; accent-color: var(--green); flex-shrink: 0; }
+.detail-page details { border-top: 1px solid var(--line); padding: 10px 0; }
+.detail-page summary { padding: 12px 0; cursor: pointer; font-size: 14px; font-weight: 600; }
+.detail-page details p { font-size: 14px; color: var(--muted); margin: 6px 0 16px; }
+.practice-timer { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 28px; background: #f4edd6; border: 1px solid #ebe0bd; border-radius: 14px; margin: 30px 0; }
+.practice-timer p { font-size: 14px; }
+.practice-timer label { font-size: 13px; display: block; margin-bottom: 7px; }
+.detail-page select { padding: 10px 12px; background: #fffef9; border: 1px solid #d0d8c7; border-radius: 7px; color: var(--ink); min-height: 44px; font-size: 16px; }
+.timer-controls { text-align: center; display: flex; flex-direction: column; justify-content: center; }
+#practice-clock { font-size: 46px; font-weight: 700; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+.timer-controls > div { display: flex; justify-content: center; gap: 8px; margin: 12px 0 0; }
+.timer-controls p { min-height: 42px; color: #75643e; font-size: 12px; }
+.page-quiz { padding: 28px; border: 1px solid var(--line); border-radius: 15px; background: #fffef9; scroll-margin-top: 28px; }
+.page-quiz button { padding: 15px; }
+.page-quiz p { color: #4b624e; }
+.lesson-finish { margin: 30px 0 20px; padding: 28px; background: #e5ecde; border-radius: 14px; }
+.lesson-finish p { font-size: 14px; }
+.lesson-content .source { margin-top: 25px; font-size: 13px !important; line-height: 1.8; }
+.source a { text-decoration: underline; text-underline-offset: 3px; }
+.next-lesson { margin-top: 30px; padding: 25px 0; border-top: 1px solid var(--line); }
+.next-lesson > a:first-of-type { font-size: 22px; font-weight: 700; display: flex; gap: 20px; justify-content: space-between; padding: 15px 0; }
+.text-button { background: none; border: 0; color: var(--green); font-size: 13px; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+.breed-card > a { display: block; width: 100%; height: 100%; }
+.detail-tabs { display: flex; flex-wrap: wrap; margin: 0 0 30px; gap: 9px; }
+.detail-tabs button { border: 1px solid #d6decd; background: #fffef9; color: var(--ink); border-radius: 24px; padding: 11px 17px; min-height: 44px; font-size: 13px; }
+.breed-detail-grid { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 30px; align-items: start; }
+.article-panel { background: #fffef9; padding: 28px; border: 1px solid var(--line); border-radius: 14px; margin-bottom: 24px; scroll-margin-top: 28px; }
+.article-panel p, .article-panel li { font-size: 15px; line-height: 1.8; color: #52634e; }
+.breed-activities { padding-left: 22px; }
+.breed-activities li { padding: 5px 0; }
+.life-stage { padding: 20px; border-radius: 10px; background: #edf2e6; margin-top: 22px; }
+.life-stage label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.life-stage p { font-size: 14px; }
+.breed-lesson-links { display: grid; gap: 8px; margin-top: 20px; }
+.breed-lesson-links a { border: 1px solid var(--line); border-radius: 8px; padding: 14px; color: var(--green); font-size: 14px; }
+.breed-facts dt { color: var(--muted); font-size: 12px; margin-top: 20px; }
+.breed-facts dd { margin: 5px 0 0; font-size: 15px; font-weight: 600; }
+.breed-facts p { font-size: 12px; color: var(--muted); margin: 22px 0; }
+@media (max-width: 1150px) {
+ .detail-hero { grid-template-columns: 1fr; }
+ .detail-hero > img { max-height: 270px; }
+ .lesson-layout { grid-template-columns: 1fr; }
+ .lesson-rail { position: static; }
+ .lesson-rail ol { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .lesson-rail .rail-progress { max-width: 340px; }
+ .breed-detail-grid { grid-template-columns: 1fr; }
+ .breed-facts { position: static; grid-row: 1; }
+ .breed-facts dl { display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+ .breed-facts dt { margin-top: 0; }
+ .breed-facts dd { margin-right: 14px; }
+ .breed-facts .btn { margin-top: 0; }
+}
+@media (max-width: 750px) {
+ .detail-hero { padding: 25px; gap: 20px; }
+ .detail-hero h1 { font-size: 30px; }
+ .detail-hero p { font-size: 15px; }
+ .detail-page { padding-top: 20px; }
+ .lesson-rail, .breed-facts { padding: 20px; z-index: auto; }
+ .lesson-step, .page-quiz, .article-panel { padding: 22px; }
+ .lesson-step, .page-quiz, .article-panel { scroll-margin-top: 145px; }
+ .lesson-content h2, .breed-detail h2 { font-size: 23px; }
+ .step-heading { gap: 12px; }
+ .step-instructions { font-size: 15px; }
+ .practice-timer { grid-template-columns: 1fr; padding: 22px; gap: 10px; }
+ .timer-controls { text-align: left; }
+ .timer-controls > div { justify-content: start; }
+ .timer-controls p { min-height: auto; }
+ .kit-list { grid-template-columns: 1fr; }
+ .detail-hero .actions { flex-direction: column; align-items: stretch; }
+ .lesson-rail ol { grid-template-columns: 1fr; gap: 4px; }
+ .breadcrumbs { margin-bottom: 18px; }
+}

@@ -41,7 +41,7 @@ function savedMessage(message) {
 }
 function lessonLink(lesson) {
   const parent = ['home', 'learn', 'plan'].includes(currentPage) ? currentPage : 'learn';
-  return `#lesson-${lesson.id}?from=${parent}`;
+  return `lessons/${lesson.id}/?from=${parent}`;
 }
 function card(lesson) {
   return `<article class="card"><a href="${lessonLink(lesson)}" aria-label="Open ${esc(lesson.title)}"><div class="card-art"><img src="${pic(lesson.img)}" alt="" loading="lazy" width="800" height="520"><span class="badge">${esc(lesson.cat)}</span></div><div class="card-body"><span class="eyebrow">${state.done.includes(lesson.id) ? '✓ Completed' : 'A little know-how'}</span><h3>${lesson.title}</h3><p>${lesson.desc}</p><div class="card-bottom"><span>◷ ${lesson.time} min · Beginner friendly</span><span class="arrow" aria-hidden="true">↗</span></div></div></a></article>`;
@@ -70,18 +70,21 @@ function breedLibrary() {
   return intro('A world of good dogs.', 'Explore their roots. Get to know the individual in front of you.') + `<label class="search-label" for="breed-search">Find a breed or group</label><div class="search-wrap"><input id="breed-search" class="search" type="search" placeholder="Try “Golden Retriever” or “Herding”…" value="${esc(breedQuery)}" aria-controls="breedcards"><button class="clear-search" data-action="clear-breeds" aria-label="Clear breed search" ${breedQuery ? '' : 'hidden'}>×</button></div><div class="section-head breed-heading"><h2>Meet the breeds</h2><p>Traits are tendencies, not promises.</p></div><p id="breed-count" class="result-count" role="status" aria-live="polite"></p><div id="breedcards" class="cards"></div>`;
 }
 function renderPage(page, focus = false) {
+  stopTimer();
   currentPage = page;
   document.querySelectorAll('nav a').forEach(link => {
-    const active = link.hash === `#${page}`;
+    const section = page === 'lesson' ? 'learn' : page === 'breed' ? 'breeds' : page;
+    const active = link.hash === `#${section}`;
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
   const title = { home: 'Overview', learn: 'Learning library', breeds: 'Breed explorer', plan: 'My learning plan', missing: 'Page not found' }[page];
-  document.title = `${title} · DOGLOVR`;
-  const pages = { home, learn: library, breeds: breedLibrary, plan: learningPlan };
+  document.title = `${page === 'lesson' ? lessons.find(l => l.id === lessonId)?.heading : page === 'breed' ? activeBreed : title} · DOGLOVR`;
+  const pages = { home, learn: library, breeds: breedLibrary, plan: learningPlan, lesson: () => lessonPage(lessonId), breed: () => breedPage(activeBreed) };
   view.innerHTML = pages[page] ? pages[page]() : intro('This trail ends here.', 'We couldn’t find that page or lesson.') + '<div class="empty"><a href="#learn" class="btn">Explore the learning library ↗</a></div>';
   if (page === 'learn') renderLessons();
   if (page === 'breeds') renderBreeds();
+  if (page === 'lesson') { updatePractice(); timerRemaining = 120; paintTimer(); }
   updateProfile();
   if (focus) view.querySelector('h1')?.focus({ preventScroll: true });
 }
@@ -95,7 +98,7 @@ function renderBreeds() {
   const needle = breedQuery.trim().toLocaleLowerCase();
   const found = breeds.filter(breed => [breed.name, breed.group, breed.size].join(' ').toLocaleLowerCase().includes(needle));
   $('breed-count').textContent = `${found.length} ${found.length === 1 ? 'guide' : 'guides'}`;
-  $('breedcards').innerHTML = found.length ? found.map(breed => `<article class="card breed-card"><button data-breed="${esc(breed.name)}" aria-label="Explore ${esc(breed.name)}"><div class="breed-art" aria-hidden="true"><span>${breed.name === 'Poodle' ? '🐩' : breed.name === 'Mixed breed' ? '🐾' : '🐕'}</span><span class="badge">${breed.group}</span></div><div class="card-body"><h3>${breed.name}</h3><p>${breed.size} · ${breed.energy === 'Varies' ? 'Energy varies' : `${breed.energy} energy`}</p><div class="card-bottom"><span>Get to know the breed</span><span class="arrow" aria-hidden="true">↗</span></div></div></button></article>`).join('') : `<div class="empty empty-results"><h3>No matching breeds yet.</h3><p>Our starter library has ${breeds.length} guides. Try a breed name or group.</p><button class="btn" data-action="clear-breeds">Show all guides ↗</button></div>`;
+  $('breedcards').innerHTML = found.length ? found.map(breed => `<article class="card breed-card"><a href="breeds/${breedKey(breed.name)}/" aria-label="Explore ${esc(breed.name)}"><div class="breed-art" aria-hidden="true"><span>${breed.name === 'Poodle' ? '🐩' : breed.name === 'Mixed breed' ? '🐾' : '🐕'}</span><span class="badge">${breed.group}</span></div><div class="card-body"><h3>${breed.name}</h3><p>${breed.size} · ${breed.energy === 'Varies' ? 'Energy varies' : `${breed.energy} energy`}</p><div class="card-bottom"><span>Get to know the breed</span><span class="arrow" aria-hidden="true">↗</span></div></div></a></article>`).join('') : `<div class="empty empty-results"><h3>No matching breeds yet.</h3><p>Our starter library has ${breeds.length} guides. Try a breed name or group.</p><button class="btn" data-action="clear-breeds">Show all guides ↗</button></div>`;
   document.querySelector('[data-action="clear-breeds"]').hidden = !breedQuery;
 }
 function showDialog(kind, content) {
@@ -113,49 +116,31 @@ function quizFeedback(lesson, chosen) {
   if (chosen === undefined) return '';
   return chosen === lesson.correct ? 'That’s right. Kind, clear and consistent.' : 'Not quite. Try another answer — learning takes practice.';
 }
-function openLesson(id) {
-  const lesson = lessons.find(item => item.id === id);
-  if (!lesson) return;
-  lessonId = id;
-  const chosen = state.answers[id];
-  const source = sources[id === 'body' ? 'body' : id === 'potty' ? 'potty' : 'train'];
-  showDialog('lesson', `<span class="eyebrow">${lesson.cat} · ${lesson.time} min lesson</span><h2>${lesson.heading}</h2><p>${lesson.intro}</p><h3>Try it together</h3><ol>${lesson.steps.map(step => `<li>${step}</li>`).join('')}</ol>${id === 'potty' ? '<p class="care-note">If toilet habits change suddenly, or your dog strains or seems unwell, contact your vet.</p>' : ''}<section class="quiz" aria-labelledby="quiz-title"><h3 id="quiz-title">A quick check-in</h3><p>${lesson.question}</p><div role="group" aria-label="Quiz answers">${lesson.answers.map((answer, index) => `<button data-answer="${index}" aria-pressed="${chosen === index}" class="${chosen === index ? (chosen === lesson.correct ? 'correct' : 'incorrect') : ''}">${answer}</button>`).join('')}</div><p class="quiz-result" id="quizresult" role="status">${quizFeedback(lesson, chosen)}</p></section><div class="actions"><button class="btn" id="completebtn" data-action="complete" aria-pressed="${state.done.includes(id)}">${state.done.includes(id) ? '✓ Completed · Undo' : 'Mark as complete ✓'}</button><button class="btn secondary" id="savebtn" data-action="save" aria-pressed="${state.saved.includes(id)}">${state.saved.includes(id) ? 'Remove from plan' : '♡ Save to my plan'}</button></div><p class="source">Further reading: <a href="${source}" target="_blank" rel="noopener noreferrer">RSPCA ${id === 'body' ? 'body language' : id === 'potty' ? 'toilet training' : 'reward-based training'} <span class="sr-only">(opens in a new tab)</span> ↗</a></p>`);
-  document.title = `${lesson.heading} · DOGLOVR`;
-}
-function openBreed(name) {
-  const breed = breeds.find(item => item.name === name);
-  if (!breed) return;
-  showDialog('breed', `<span class="eyebrow">${breed.group} · ${breed.size}</span><h2>${breed.name}</h2><p>${breed.text}</p><h3>Learning together</h3><p>${breed.focus}</p><h3>Remember the individual</h3><p>Breed can offer clues, but age, health, experience and personality shape every dog. Meet their individual needs and ask your vet about breed-specific health screening.</p><a class="btn" href="#learn">Explore training lessons ↗</a>${breed.slug ? `<p class="source">Explore the <a target="_blank" rel="noopener noreferrer" href="https://www.akc.org/dog-breeds/${breed.slug}/">AKC breed guide <span class="sr-only">(opens in a new tab)</span> ↗</a></p>` : ''}`);
-}
 function editProfile() {
   showDialog('profile', `<span class="eyebrow">Your best friend</span><h2>Make it their journey.</h2><form id="profile-form"><label class="form-field" for="doginput">What’s your dog’s name?<input id="doginput" name="dog" maxlength="40" value="${esc(state.dog)}" placeholder="e.g. Milo" autocomplete="off" aria-describedby="profile-help"></label><p id="profile-help">Your dog’s name is optional. Your profile and progress are stored only in this browser on this device.</p><button class="btn" type="submit">Save profile ♡</button></form>`);
 }
 function closeDialog(restoreFocus = true) {
-  const wasLesson = modalKind === 'lesson';
-  routeClosing = true;
-  modal.close();
-  document.body.classList.remove('modal-open');
-  modalKind = '';
-  if (wasLesson) history.replaceState(null, '', `#${DoglovrState.route(location.hash).page}`);
+  routeClosing = true; modal.close(); document.body.classList.remove('modal-open'); modalKind = '';
   renderPage(currentPage);
-  const fallback = (wasLesson && view.querySelector(`a[href^="#lesson-${lessonId}"]`)) || view.querySelector('h1');
-  if (restoreFocus) (lastTrigger?.isConnected ? lastTrigger : fallback)?.focus({ preventScroll: true });
+  if (restoreFocus) (lastTrigger?.isConnected ? lastTrigger : view.querySelector('h1'))?.focus({ preventScroll: true });
   window.scrollTo({ top: lastScroll, behavior: 'instant' });
 }
 function navigate(initial = false) {
-  const route = DoglovrState.route(location.hash);
+  const route = detailRoute();
+  stopTimer();
   if (modal.open) { routeClosing = true; modal.close(); document.body.classList.remove('modal-open'); modalKind = ''; }
-  const changed = currentPage !== route.page;
-  if (changed || !route.lesson) renderPage(route.page, !initial && !route.lesson);
-  if (changed) window.scrollTo({ top: 0, behavior: 'instant' });
-  if (route.lesson) openLesson(route.lesson);
+  if (route.lesson) lessonId = route.lesson;
+  if (route.breed) activeBreed = route.breed;
+  returnPage = route.parent || 'learn';
+  renderPage(route.page, !initial);
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 function selectAnswer(index) {
   const lesson = lessons.find(item => item.id === lessonId);
   if (!lesson || !Number.isInteger(index) || index < 0 || index >= lesson.answers.length) return;
   state.answers[lessonId] = index; persist();
   $('quizresult').textContent = quizFeedback(lesson, index);
-  modal.querySelectorAll('[data-answer]').forEach(button => {
+  view.querySelectorAll('[data-answer]').forEach(button => {
     const selected = Number(button.dataset.answer) === index;
     button.setAttribute('aria-pressed', String(selected));
     button.classList.toggle('correct', selected && index === lesson.correct);
@@ -178,6 +163,8 @@ function saveLesson() {
 }
 const actions = {
   profile: editProfile, close: () => closeDialog(), complete: completeLesson, save: saveLesson,
+  'jump-first': () => jumpTo('practice-step-0'), 'jump-quiz': () => jumpTo('lesson-quiz'),
+  'timer-toggle': toggleTimer, 'timer-reset': resetTimer,
   'clear-lessons': () => { query = ''; $('lesson-search').value = ''; renderLessons(); $('lesson-search').focus(); },
   'clear-breeds': () => { breedQuery = ''; $('breed-search').value = ''; renderBreeds(); $('breed-search').focus(); },
   'reset-lessons': () => { query = ''; category = 'All lessons'; renderPage('learn'); $('lesson-search').focus(); }
@@ -186,13 +173,14 @@ document.addEventListener('click', event => {
   const target = event.target.closest('button, a');
   if (!target) return;
   if (target.classList.contains('skip-link')) { event.preventDefault(); $('main').focus(); return; }
-  if (target.dataset.action) actions[target.dataset.action]?.();
+  if (target.dataset.action) actions[target.dataset.action]?.(target);
   if (target.dataset.category) {
     category = target.dataset.category;
     document.querySelectorAll('[data-category]').forEach(button => { const selected = button.dataset.category === category; button.classList.toggle('selected', selected); button.setAttribute('aria-pressed', String(selected)); });
     renderLessons();
   }
-  if (target.dataset.breed) openBreed(target.dataset.breed);
+  if (target.dataset.jump !== undefined) jumpTo(`practice-step-${target.dataset.jump}`);
+  if (target.dataset.breedJump) jumpTo(target.dataset.breedJump);
   if (target.dataset.answer !== undefined) selectAnswer(Number(target.dataset.answer));
   if (target.tagName === 'A' && modal.open && modalKind !== 'lesson' && target.hash === location.hash) closeDialog();
 });
@@ -210,7 +198,7 @@ window.addEventListener('hashchange', () => navigate());
 window.addEventListener('storage', event => {
   if (event.key !== 'doglovr' && event.key !== null) return;
   try { loaded = DoglovrState.load(window.localStorage); state = loaded.state; storageAvailable = loaded.available; } catch { return; }
-  if (modalKind === 'lesson') openLesson(lessonId); else renderPage(currentPage);
+  stopTimer(); renderPage(currentPage);
   updateProfile();
 });
 navigate(true);

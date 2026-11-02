@@ -23,6 +23,15 @@ test('home and relative assets serve successfully with correct types', async () 
 test('unknown files return 404 instead of HTML masquerading as scripts', async () => {
   assert.equal((await fetch(origin + '/missing.js')).status, 404);
 });
+test('nested lesson and breed URLs can be opened directly and refreshed', async () => {
+  for (const route of ['/lessons/potty/?from=plan', '/lessons/recall/', '/breeds/golden-retriever/']) {
+    const response = await fetch(origin + route);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /<base href="\.\.\/\.\.\/">/);
+    assert.match(html, /data-(lesson|breed)=/);
+  }
+});
 test('the preview server cannot expose files above dist', async () => {
   const response = await fetch(origin + '/..%2fpackage.json');
   assert.equal(response.status, 403);

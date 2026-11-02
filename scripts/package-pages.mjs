@@ -1,0 +1,13 @@
+import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { resolve, dirname, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const stage = resolve(root, '.pages-site');
+if (!stage.startsWith(root + sep) || stage === root) throw new Error('Invalid Pages staging path');
+rmSync(stage, { recursive: true, force: true });
+mkdirSync(stage);
+cpSync(resolve(root, 'dist'), resolve(stage, 'dist'), { recursive: true });
+cpSync(resolve(root, 'index.html'), resolve(stage, 'index.html'));
+cpSync(resolve(root, 'launch.js'), resolve(stage, 'launch.js'));
+writeFileSync(resolve(stage, '.nojekyll'), '');
+console.log('Pages package ready: .pages-site/ (stable app URLs under dist/)');

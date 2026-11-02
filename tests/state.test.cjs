@@ -11,7 +11,7 @@ const plain = value => JSON.parse(JSON.stringify(value));
 
 test('new users start without invented progress', () => {
   const { state, available } = model.load({ getItem: () => null });
-  assert.deepEqual(plain(state), { version: 1, dog: '', saved: [], done: [], answers: {} });
+  assert.deepEqual(plain(state), { version: 1, dog: '', saved: [], done: [], answers: {}, practice: {} });
   assert.equal(available, true);
 });
 test('legacy profiles keep valid progress and migrate to version 1', () => {
@@ -54,6 +54,11 @@ test('saved and completed lessons can be toggled without duplicates', () => {
   assert.deepEqual(original, []); assert.deepEqual(plain(added), ['body']);
   assert.deepEqual(plain(model.toggle(added, 'body')), []);
   assert.deepEqual(plain(model.toggle(added, 'missing')), ['body']);
+});
+test('practice steps migrate safely and reject duplicates and unknown indices', () => {
+  const state = model.normalize({ practice: { body: [0, 0, 2, 8, -1, '1'], potty: true, missing: [0] } });
+  assert.deepEqual(plain(state.practice), { body: [0, 2] });
+  assert.deepEqual(plain(model.normalize({ done: ['sit'] }).practice), {});
 });
 test('search trims whitespace, ignores case and searches lesson content', () => {
   assert.deepEqual(plain(model.filterLessons('All lessons', '  RECALL  ')).map(l => l.id), ['recall']);

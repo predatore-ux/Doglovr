@@ -12,7 +12,7 @@ const server = createServer(async (req, res) => {
   try {
     if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return; }
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    const path = resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+    const path = resolve(root, `.${pathname.endsWith('/') ? pathname + 'index.html' : pathname}`);
     if (!path.startsWith(root + sep)) { res.writeHead(403); res.end('Forbidden'); return; }
     if (!(await stat(path)).isFile()) throw new Error('Not a file');
     const body = await readFile(path);

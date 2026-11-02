@@ -1,16 +1,19 @@
 /* Pure, validated state shared by the app and regression tests. */
 const DoglovrState = (() => {
   const lessonIds = new Set(lessons.map(lesson => lesson.id));
-  const empty = () => ({ version: 1, dog: '', saved: [], done: [], answers: {} });
+  const empty = () => ({ version: 1, dog: '', saved: [], done: [], answers: {}, practice: {} });
   function normalize(input) {
     const value = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
     const ids = list => Array.isArray(list) ? [...new Set(list.filter(id => lessonIds.has(id)))] : [];
     const answers = {};
+    const practice = {};
     for (const lesson of lessons) {
       const answer = value.answers?.[lesson.id];
       if (Number.isInteger(answer) && answer >= 0 && answer < lesson.answers.length) answers[lesson.id] = answer;
+      const steps = value.practice?.[lesson.id];
+      if (Array.isArray(steps)) practice[lesson.id] = [...new Set(steps.filter(index => Number.isInteger(index) && index >= 0 && index < 4))];
     }
-    return { version: 1, dog: typeof value.dog === 'string' ? value.dog.trim().slice(0, 40) : '', saved: ids(value.saved), done: ids(value.done), answers };
+    return { version: 1, dog: typeof value.dog === 'string' ? value.dog.trim().slice(0, 40) : '', saved: ids(value.saved), done: ids(value.done), answers, practice };
   }
   function load(storage) {
     let raw;
